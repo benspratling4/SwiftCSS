@@ -53,6 +53,26 @@ public enum CSSColor : Equatable {
 		}
 	}
 	
+	
+	public var cssString:String {
+		switch self {
+		case .currentColor:
+			return "currentcolor"
+		case .named(let name):
+			return name.rawValue
+		case .hex(let hexString):
+			return "#" + hexString
+		case .rgb(let r, let g, let b):
+			return "rgb(\(r), \(g), \(b))"
+		case .rgba(let r, let g, let b, let a):
+			return "rgba(\(r), \(g), \(b), \(a))"
+		case .hsla(let h, let s, let l, let a):
+			return "hsla(\(h), \(s)%, \(l)%, \(a))"
+		case .hsl(let h, let s, let l):
+			return "hsla(\(h), \(s)%, \(l)%)"
+		}
+	}
+	
 }
 
 
