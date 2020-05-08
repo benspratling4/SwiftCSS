@@ -63,3 +63,17 @@ extension Array where Element == RuleSet {
 	
 }
 
+
+
+extension Array where Element == Declaration {
+	
+	public init(inlineStyle:String) {
+		let scanner = Scanner(string: inlineStyle)
+		var declarations:[Declaration] = []
+		while let newDeclaration:Declaration = scanner.scanDeclaration() {
+			declarations.append(newDeclaration)
+		}
+		_ = scanner.scanCharacters(from: .whitespacesAndNewlines)
+		self = declarations
+	}
+}
