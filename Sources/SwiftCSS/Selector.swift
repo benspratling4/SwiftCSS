@@ -9,6 +9,7 @@ import Foundation
 
 public struct CSSSelector {
 	public var main:CSSSelectorMain
+	//TODO: handle multiple attributes
 	public var attributes:CSSSelectorAttribute?
 //	public var pseudo:CSSSelectorPsuedo?
 	
@@ -18,6 +19,33 @@ public struct CSSSelector {
 			mainString += attrString
 		}
 		return mainString
+	}
+	
+	
+	
+	public var specificity:Int {
+		//https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Cascade_and_inheritance#Specificity_2
+		//thousands ignored, because inline styles override cascade styles in another algorithm
+		var hundreds:Int = 0
+		var tens:Int = 0
+		var ones:Int = 0
+		
+		switch main {
+		case .id(_):
+			hundreds += 1
+		case .className(_):
+			tens += 1
+		case .elementName(_):
+			ones += 1
+		default:
+			break
+		}
+		
+		if attributes != nil {
+			ones += 2
+		}
+		
+		return  100*hundreds + 10*tens + ones
 	}
 }
 
@@ -117,7 +145,7 @@ public struct CSSSelectorAttribute {
 
 public enum SelectorCombinator {
 	/// ,
-	case also
+//	case also	//this is wrong
 	
 	///" "
 	case descendant
@@ -136,8 +164,6 @@ public enum SelectorCombinator {
 	
 	public var cssString:String {
 		switch self {
-		case .also:
-			return ", "
 		case .descendant:
 			return " "
 		case .child:
@@ -168,5 +194,34 @@ public struct SelectorGroup {
 	}
 	
 	
-	//TODO: func matchesLastItemInStack([Element])->Bool
+	public var specificity:Int {
+		var allSelectors:[CSSSelector] = [firstSelector]
+		for (_, selector) in additionalSelectors {
+			allSelectors.append(selector)
+		}
+		return allSelectors.map({ $0.specificity }).reduce(0, +)
+	}
+	
+	//split into two groups, before and after
+	func split(at combinator:SelectorCombinator)->(SelectorGroup, SelectorGroup)? {
+		var pre:SelectorGroup = SelectorGroup(firstSelector: firstSelector)
+		var startsPost:SelectorGroup?
+		for (aCombinator, selector) in additionalSelectors {
+			if startsPost != nil {
+				startsPost?.additionalSelectors.append((aCombinator, selector))
+				continue
+			}
+			if aCombinator == combinator {
+				startsPost = SelectorGroup(firstSelector: selector)
+				continue
+			}
+			pre.additionalSelectors.append((aCombinator, selector))
+		}
+		guard var post = startsPost else {
+			return nil
+		}
+		return (pre, post)
+	}
+	
+	
 }

@@ -67,14 +67,20 @@ extension Scanner {
 	
 	public func scanRuleSet()->RuleSet? {
 		let originalLocation = scanLocation
-		guard let selectorGroup = scanSelectorGroup() else {
-			return nil
+		var groups:[SelectorGroup] = []
+		while let selectorGroup = scanSelectorGroup() {
+			groups.append(selectorGroup)
+			//if there is a , do another
+			if scanString(",") == nil {
+				break
+			}
+			_ = scanCharacters(from: .whitespacesAndNewlines)
 		}
 		guard let block = scanDeclarationBlock() else {
 			scanLocation = originalLocation
 			return nil
 		}
-		return RuleSet(selectorGroup: selectorGroup, block: block)
+		return RuleSet(selectorGroups: groups, block: block)
 	}
 	
 }

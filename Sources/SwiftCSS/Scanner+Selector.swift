@@ -14,10 +14,9 @@ extension Scanner {
 	public func scanSelectorCombinator()->SelectorCombinator? {
 		let originalLocation = scanLocation
 		if scanString(",") != nil {
-			_ = scanCharacters(from: .whitespacesAndNewlines)
-			return .also
+			scanLocation = originalLocation
+			return nil//
 		}
-		
 		if scanCharacters(from: .whitespacesAndNewlines) != nil {
 			//try other characters
 			if scanString(">") != nil {
@@ -55,7 +54,7 @@ extension Scanner {
 			return .universal
 		}
 		if scanString("#") != nil {
-			guard let letters:String = scanCharacters(from: .letters) else {
+			guard let letters:String = scanCharacters(from: .alphanumerics) else {
 				scanLocation = originalLocation
 				return nil
 			}
@@ -69,7 +68,7 @@ extension Scanner {
 			return .className(letters)
 		}
 		
-		guard let letters:String = scanCharacters(from: .letters) else {
+		guard let letters:String = scanCharacters(from: .alphanumerics) else {
 			scanLocation = originalLocation
 			return nil
 		}

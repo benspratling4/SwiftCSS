@@ -39,11 +39,11 @@ public struct DeclarationBlock {
 
 
 public struct RuleSet {
-	public var selectorGroup:SelectorGroup
+	public var selectorGroups:[SelectorGroup]
 	public var block:DeclarationBlock
 	
-	public init(selectorGroup:SelectorGroup, block:DeclarationBlock) {
-		self.selectorGroup = selectorGroup
+	public init(selectorGroups:[SelectorGroup], block:DeclarationBlock) {
+		self.selectorGroups = selectorGroups
 		self.block = block
 	}
 	
