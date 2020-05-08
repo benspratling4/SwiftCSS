@@ -5,6 +5,7 @@ public func allTests() -> [XCTestCaseEntry] {
     return [
         testCase(ColorTests.allTests),
 		testCase(CascadeTests.allTests),
+		testCase(DimensionTests.allTests),
     ]
 }
 #endif

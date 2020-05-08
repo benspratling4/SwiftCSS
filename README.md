@@ -49,7 +49,12 @@ Values are always strings, you can then attempt to interpret them as the data ty
 
 ## Value Interpretation
 
-WIP
+### Dimensions
+
+let dimension:Dimension? = Dimension(value:"13.5em")
+dimension?.number == 13.5
+dimension?.unit == RelativeLengthUnits.em
+
 
 ### Color
 
