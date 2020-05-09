@@ -87,11 +87,18 @@ public struct CSSSelectorAttribute {
 	//TODO: optional case insensitivity
 	public var name:String
 	
-	public var operatorAndValue:(AttributeOperator, String)?
+	///( operator, value (no "), caseInsensitive)
+	public var operatorAndValue:(AttributeOperator, String, Bool)?
+	
+	public init(name:String, operatorAndValue:(AttributeOperator, String, Bool)?) {
+		self.name = name
+		self.operatorAndValue = operatorAndValue
+	}
 	
 	public var cssString:String {
-		if let (attrOperator, value) = operatorAndValue {
-			return "[" + name + attrOperator.rawValue + value + "\"]"
+		if let (attrOperator, value, caseInsensitive) = operatorAndValue {
+			let caseString:String = caseInsensitive ? " i" : ""
+			return "[" + name + attrOperator.rawValue + value + "\"" + caseString + "]"
 		} else {
 			return "[" + name + "]"
 		}
@@ -119,22 +126,24 @@ public struct CSSSelectorAttribute {
 		guard let value:String = attributes[name] else {
 			return false
 		}
-		guard let (op, comparedValue):(AttributeOperator, String) = operatorAndValue else {
+		guard let (op, comparedValue, caseInsensitive):(AttributeOperator, String, Bool) = operatorAndValue else {
 			return true
 		}
+		let valueToCompare:String = caseInsensitive ? value.lowercased() : value
+		let comparedValueToCompare:String = caseInsensitive ? comparedValue.lowercased() : comparedValue
 		switch op {
 		case .equals:
-			return value == comparedValue
+			return valueToCompare == comparedValueToCompare
 		case .contains:
-			return value.contains(comparedValue)
+			return valueToCompare.contains(comparedValueToCompare)
 		case .prefix:
-			return value.hasPrefix(comparedValue)
+			return valueToCompare.hasPrefix(comparedValueToCompare)
 		case .suffix:
-			return value.hasSuffix(comparedValue)
+			return valueToCompare.hasSuffix(comparedValueToCompare)
 		case .listContains:
-			return value.components(separatedBy: " ").contains(comparedValue)
+			return valueToCompare.components(separatedBy: " ").contains(comparedValueToCompare)
 		case .hyphenatedPrefix:
-			return value.hasPrefix(comparedValue + "-")
+			return valueToCompare.hasPrefix(comparedValueToCompare + "-")
 		}
 	}
 	

@@ -47,6 +47,37 @@ p {
 			XCTAssertEqual(decls[0].value, "#000000")
 		}
 	
+	
+	func testAttributes() {
+			   let css:String = """
+p[stroke="save"] {
+   background-color:#000000;
+}
+"""
+		let ruleSets:[RuleSet] = [RuleSet](css: css)
+		XCTAssertEqual(ruleSets.count, 1)
+		let elementStack = [Element(name: "p", attributes: ["stroke":"save"])]
+		let decls = elementStack.evaluateCascade(rules: ruleSets, inlineStyle: [])
+		XCTAssertEqual(decls.count, 1)
+		XCTAssertEqual(decls[0].name, "background-color")
+		XCTAssertEqual(decls[0].value, "#000000")
+	}
+	
+	func testCaseInsensitiveAttributes() {
+				   let css:String = """
+	p[stroke="save" i] {
+	   background-color:#000000;
+	}
+	"""
+			let ruleSets:[RuleSet] = [RuleSet](css: css)
+			XCTAssertEqual(ruleSets.count, 1)
+			let elementStack = [Element(name: "p", attributes: ["stroke":"Save"])]
+			let decls = elementStack.evaluateCascade(rules: ruleSets, inlineStyle: [])
+			XCTAssertEqual(decls.count, 1)
+			XCTAssertEqual(decls[0].name, "background-color")
+			XCTAssertEqual(decls[0].value, "#000000")
+	}
+	
 
     static var allTests = [
         ("testLaterIdenticalSelectorsWin", testLaterIdenticalSelectorsWin),

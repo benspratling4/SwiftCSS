@@ -112,7 +112,16 @@ extension Scanner {
 			scanLocation = originalLocation
 			return nil
 		}
-		return CSSSelectorAttribute(name: attrName, operatorAndValue: (op, valueString))
+		//skip whitespace & find an i or nnot
+		_ = scanCharacters(from: .whitespaces)
+		let caseInsensitive:Bool = scanString("i") != nil
+		if scanString("]") != nil {
+			return CSSSelectorAttribute(name: attrName, operatorAndValue: (op, valueString, caseInsensitive))
+		} else {
+			//fail
+			scanLocation = originalLocation
+			return nil
+		}
 	}
 	
 	func scanSelector()->CSSSelector? {

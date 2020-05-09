@@ -3,7 +3,7 @@ Parse CSS and evaluate the cascade
 The goal is to be able to parse all CSS, and be able to evaluate an arbitrary property name in a cascade
 WIP Feel free to contribute.  
 
-Status: Basic selector parsing without siblings combinators, only a single attribute on a selector, does not handle `!important` or at-statements.
+Status: Basic selector parsing without siblings combinators, does not handle `!important`, and skips at-rules.
 
 Does not handle style attributes in Elements, does not handle "inherit", "unset" or "revert" values.
 
@@ -12,7 +12,7 @@ Can interpret color values except currentcolor.
 
 ## RuleSet Scanning
 
-Neglecting at-statements, a CSS document is an array of "rule sets", represented by `RuleSet`.
+Skipping at-rules, a CSS document is an array of "rule sets", represented by `RuleSet`.
 
 `let css:String = ....`
 
@@ -22,7 +22,9 @@ Neglecting at-statements, a CSS document is an array of "rule sets", represented
 
 ## Cascade Evaluation
 
-Parse all your css strings to create `[RuleSet]`.  Then take your `SwiftCSS.Element` stack (or an array with a single `Element`) and evaluate the rule sets.
+Parse all your css strings and concatenate the arrays to create a single `[RuleSet]`.
+Evaluate inline style strings by creating a stand-alone set of `Declaration`s.  `let inlineStyle:[Declaration] = [Declaration](inlineStyle:"...")` 
+Then take your `[SwiftCSS.Element]` stack (or an array with a single `Element`) and evaluate the rule sets.
 
 ```
 let css:String = """
@@ -35,7 +37,8 @@ p {
 """
 let ruleSets:[RuleSet] = [RuleSet](css: css)
 let elementStack = [Element(name: "p", attributes: ["class":"black"])]
-let decls = elementStack.evaluateCascade(rules: ruleSets, inlineStyle: [])
+let inlineStyle:[Declaration] = [Declaration](inlineStyle:"...")
+let decls = elementStack.evaluateCascade(rules: ruleSets, inlineStyle: inlineStyle)
 
 //decls[0].name == "background-color"
 //decls[0].value == "#FFFFFF"
