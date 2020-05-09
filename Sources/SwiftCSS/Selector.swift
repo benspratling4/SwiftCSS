@@ -9,18 +9,19 @@ import Foundation
 
 public struct CSSSelector {
 	public var main:CSSSelectorMain
-	//TODO: handle multiple attributes
-	public var attributes:CSSSelectorAttribute?
+	public var attributes:[CSSSelectorAttribute]
 //	public var pseudo:CSSSelectorPsuedo?
 	
 	public var cssString:String {
-		var mainString = main.cssString
-		if let attrString:String = attributes?.cssString {
-			mainString += attrString
-		}
+		var mainString = main.cssString + attributes.map({ $0.cssString }).joined()
 		return mainString
 	}
 	
+	
+	public init(main:CSSSelectorMain, attributes:[CSSSelectorAttribute] = []) {
+		self.main = main
+		self.attributes = attributes
+	}
 	
 	
 	public var specificity:Int {
@@ -40,10 +41,7 @@ public struct CSSSelector {
 		default:
 			break
 		}
-		
-		if attributes != nil {
-			ones += 2
-		}
+		tens += attributes.count
 		
 		return  100*hundreds + 10*tens + ones
 	}

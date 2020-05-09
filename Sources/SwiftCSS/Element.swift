@@ -28,7 +28,7 @@ public class Element {
 
 extension CSSSelector {
 	
-	func selectsElement(_ element:Element)->Bool {
+	public func selectsElement(_ element:Element)->Bool {
 		switch self.main {
 		case .universal:
 			break
@@ -45,10 +45,7 @@ extension CSSSelector {
 				return false
 			}
 		}
-		guard let attributes = self.attributes else {
-			return true
-		}
-		return attributes.matchesResolvedAttributes(element.attributes)
+		return attributes.map({ $0.matchesResolvedAttributes(element.attributes) }).reduce(true, { $0 && $1 })
 	}
 	
 }

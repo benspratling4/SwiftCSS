@@ -117,7 +117,10 @@ extension Scanner {
 			scanLocation = originalLocation
 			return nil
 		}
-		let attributes = scanSelectorAttributes()
+		var attributes:[CSSSelectorAttribute] = []
+		while let attribute = scanSelectorAttributes() {
+			attributes.append(attribute)
+		}
 		return CSSSelector(main: selectorMain, attributes: attributes)
 	}
 	
