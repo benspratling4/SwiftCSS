@@ -54,6 +54,7 @@ extension Array where Element == RuleSet {
 	
 	public init(css:String) {
 		let scanner = Scanner(string: css)
+		scanner.charactersToBeSkipped = nil
 		var ruleSets:[RuleSet] = []
 		while let set = scanner.scanRuleSet() {
 			ruleSets.append(set)
@@ -69,6 +70,7 @@ extension Array where Element == Declaration {
 	
 	public init(inlineStyle:String) {
 		let scanner = Scanner(string: inlineStyle)
+		scanner.charactersToBeSkipped = nil
 		var declarations:[Declaration] = []
 		while let newDeclaration:Declaration = scanner.scanDeclaration() {
 			declarations.append(newDeclaration)

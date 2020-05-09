@@ -35,6 +35,24 @@ p {
 	}
 	
 	
+	func testIgnoreAtRules() {
+		let css:String = """
+@charset "utf-8";
+@import url('landscape.css') screen and (orientation:landscape);
+@supports (display: grid) {
+  div {
+    display: grid;
+  }
+}
+p, h1 {
+	background-color:#6D9A0B;
+}
+"""
+				let ruleSet:[RuleSet] = [RuleSet](css: css)
+				XCTAssertEqual(ruleSet.count, 1)
+	}
+	
+	
 	
     static var allTests = [
         ("testScanRuleSet", testScanRuleSet),

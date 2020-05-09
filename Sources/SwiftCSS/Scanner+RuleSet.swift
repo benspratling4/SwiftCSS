@@ -68,6 +68,10 @@ extension Scanner {
 	public func scanRuleSet()->RuleSet? {
 		let originalLocation = scanLocation
 		var groups:[SelectorGroup] = []
+		//ignore all leading at-rule sets
+		while scanAtRule() {
+			continue
+		}
 		while let selectorGroup = scanSelectorGroup() {
 			groups.append(selectorGroup)
 			//if there is a , do another

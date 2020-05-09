@@ -108,6 +108,10 @@ extension Scanner {
 			scanLocation = originalLocation
 			return nil
 		}
+		guard scanString("\"") != nil else {
+			scanLocation = originalLocation
+			return nil
+		}
 		return CSSSelectorAttribute(name: attrName, operatorAndValue: (op, valueString))
 	}
 	
@@ -137,6 +141,10 @@ extension Scanner {
 		while let combinator:SelectorCombinator = scanSelectorCombinator() {
 			//it's ok to not get a combinator, but if we get a combinator we must get a selector
 			guard let nextSelector:CSSSelector = scanSelector() else {
+				//but if the combinator was a .descendant, then it's just whitespace, and we didn't fial
+				if combinator == .descendant {
+					return SelectorGroup(firstSelector: firstSelector, additionalSelectors: additionalSelectors)
+				}
 				scanLocation = originalLocation
 				return nil
 			}
