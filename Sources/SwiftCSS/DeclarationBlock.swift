@@ -47,6 +47,9 @@ public struct RuleSet {
 		self.block = block
 	}
 	
+	public var cssString:String  {
+		selectorGroups.map({ $0.cssString }).joined(separator: ", ") + block.cssString
+	}
 }
 
 
