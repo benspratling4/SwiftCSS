@@ -8,7 +8,6 @@
 import Foundation
 
 
-
 extension Scanner {
 	
 	public func scanDimesion()->(Float64, String)? {
@@ -16,7 +15,7 @@ extension Scanner {
 		guard let number = scanDouble() else {
 			return nil
 		}
-		guard let units = scanCharacters(from:unitCharacters) else {
+		guard let units = scanCharacters(from:.cssUnitCharacters) else {
 			scanLocation = originalLocation
 			return nil
 		}
@@ -28,7 +27,7 @@ extension Scanner {
 		guard let number = scanDouble() else {
 			return nil
 		}
-		guard let units = scanCharacters(from:unitCharacters) else {
+		guard let units = scanCharacters(from:.cssUnitCharacters) else {
 			scanLocation = originalLocation
 			return nil
 		}
@@ -44,7 +43,7 @@ extension Scanner {
 		guard let number = scanDouble() else {
 			return nil
 		}
-		guard let units = scanCharacters(from:unitCharacters) else {
+		guard let units = scanCharacters(from:.cssUnitCharacters) else {
 			scanLocation = originalLocation
 			return nil
 		}
@@ -75,5 +74,6 @@ extension Scanner {
 	
 }
 
-
-internal let unitCharacters:CharacterSet = CharacterSet.letters.union(CharacterSet(charactersIn: "%"))
+extension CharacterSet {
+	public static let cssUnitCharacters:CharacterSet = CharacterSet.letters.union(CharacterSet(charactersIn: "%"))
+}
